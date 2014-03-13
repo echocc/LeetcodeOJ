@@ -1,0 +1,35 @@
+public class Solution {
+    public int removeDuplicates(int[] A) {
+        int l = A.length;
+        if (l < 2) return l;
+        
+        int pre = 0, cur = 1;
+        while (cur < l) {
+            if (A[pre] != A[cur]) {
+                pre ++;
+                A[pre] = A[cur];
+            }
+            cur ++;
+        }
+        return pre + 1;
+    }
+    
+    public int removeDuplicatesII(int[] A) {
+        int l = A.length;
+        if (l < 3) return l;
+        
+        int pre = 0, cur = 1;
+        boolean duplicate = false;
+        while (cur < l) {
+            if (A[cur] != A[pre]) {
+                A[++pre] = A[cur]; 
+                duplicate  = false;
+            } else if (! duplicate) {
+                duplicate = true;
+                A[++pre] = A[cur];
+            }
+            cur ++;
+        }
+        return pre + 1;
+    }
+}
