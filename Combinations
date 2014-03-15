@@ -1,0 +1,49 @@
+// ****
+public class Solution {
+    // DP to improve time limited exceeded
+    public ArrayList<ArrayList<Integer>> combine(int n, int k) {
+        ArrayList<ArrayList<Integer>> combs = new ArrayList<ArrayList<Integer>>();
+        if (k == 0 || k > n) return combs;
+        
+        ArrayList<ArrayList<ArrayList<Integer>>> DP = new ArrayList<ArrayList<ArrayList<Integer>>>();
+        ArrayList<Integer> comb = new ArrayList<Integer>();
+        comb.add(1);
+        combs.add(comb);
+        DP.add(combs); //DP[0] is a temporary store for future use
+        DP.add(combs); //DP.get(j) = combine(i, j);
+        for (int j=2; j<k+1; j++) DP.add(new ArrayList<ArrayList<Integer>>());
+        
+        ArrayList<ArrayList<Integer>> temp;
+        // combine(i, j) = (combine(i-1, j-1) + [i]) & combine(i-1, j)
+        for (int i=2; i<n+1; i++)
+            for (int j=Math.max(1, k-n+i); j<Math.min(i+1, k+1); j++) {
+                temp = deepCopy(DP.get(j));
+                
+                if (j == 1) {
+                    comb = new ArrayList<Integer>();
+                    comb.add(i);
+                    DP.get(j).add(comb);
+                } else {
+                    combs = (j == k-n+i) ? DP.get(j-1) : DP.get(0);
+                    for (ArrayList<Integer> list : combs) list.add(i);
+                    DP.get(j).addAll(combs);
+                }
+                
+                DP.set(0, temp); // update DP[0] -> improve?
+            }
+        
+        return DP.get(k);
+    }
+    
+    public ArrayList<ArrayList<Integer>> deepCopy(ArrayList<ArrayList<Integer>> lists) {
+        ArrayList<ArrayList<Integer>> newLists = new ArrayList<ArrayList<Integer>>();
+        
+        for (ArrayList<Integer> list : lists) {
+            ArrayList<Integer> newList = new ArrayList<Integer>();
+            for (int n : list)
+                newList.add(n);
+            newLists.add(newList);
+        }
+        return newLists;
+    }
+}
